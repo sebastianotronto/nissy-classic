@@ -36,6 +36,8 @@ static void        init_cphtr_right_cosets_color(int i, int c);
 static void        init_cpud_separate(void);
 static void        init_cornershtrfin(void);
 static void        init_htr_eposs(void);
+static void        init_move_epud(void);
+static void        init_move_cphtr(void);
 
 
 /* All sorts of useful costants and tables  **********************************/
@@ -49,6 +51,8 @@ static int              cornershtrfin_ind[FACTORIAL8];
 int                     cornershtrfin_ant[24*24/6];
 static int              htr_eposs_ind[BINOM12ON4];
 static int              htr_eposs_ant[BINOM8ON4];
+static int              move_cphtr_aux[NMOVES][BINOM8ON4*6];
+static int              move_epud_aux[NMOVES][FACTORIAL8];
 
 /* Coordinates and their implementation **************************************/
 
@@ -286,47 +290,12 @@ move_eofbepos(Move m, uint64_t ind)
 static uint64_t
 move_epud(Move m, uint64_t ind)
 {
-	/* TODO: save to file? */
-	static bool initialized = false;
-	static int a[12] = { [8] = 8, [9] = 9, [10] = 10, [11] = 11 };
 	static int shortlist[NMOVES] = {
 		[U] = 0, [U2] = 1, [U3] = 2, [D] = 3, [D2] = 4, [D3] = 5,
 		[R2] = 6, [L2] = 7, [F2] = 8, [B2] = 9
 	};
-	static uint64_t aux[10][FACTORIAL8];
-	uint64_t ui;
-	int j;
-	Move mj;
-	Cube c;
-	CubeArray *arr, *auxarr;
 
-	if (!moveset_drud.allowed(m)) {
-		fprintf(stderr, "Move not allowed for epud\n"
-		                "This is a bug, please report\n");
-		return coord_epud.max;
-	}
-
-	if (!initialized) {
-		auxarr = malloc(sizeof(CubeArray));
-		auxarr->ep = a;
-		for (ui = 0; ui < coord_epud.max; ui++) {
-			index_to_perm(ui, 8, a);
-			c = arrays_to_cube(auxarr, pf_ep);
-			for (j = 0; moveset_drud.sorted_moves[j] != NULLMOVE;
-			    j++) {
-				mj = moveset_drud.sorted_moves[j];
-				arr = new_cubearray(apply_move(mj, c), pf_ep);
-				aux[shortlist[mj]][ui] =
-				    perm_to_index(arr->ep, 8);
-				free_cubearray(arr, pf_ep);
-			}
-		}
-		free(auxarr);
-
-		initialized = true;
-	}
-
-	return aux[shortlist[m]][ind];
+	return move_epud_aux[shortlist[m]][ind];
 }
 
 static uint64_t
@@ -355,21 +324,7 @@ move_cp(Move m, uint64_t ind)
 static uint64_t
 move_cphtr(Move m, uint64_t ind)
 {
-	static bool initialized = false;
-	static uint64_t aux[NMOVES][BINOM8ON4*6];
-	uint64_t ui;
-	Move j;
-
-	if (!initialized) {
-		for (ui = 0; ui < BINOM8ON4*6; ui++)
-			for (j = U; j < NMOVES; j++)
-				aux[j][ui] = cphtr_right_cosets[
-				    cp_mtable[j][cphtr_right_rep[ui]]];
-
-		initialized = true;
-	}
-
-	return aux[m][ind];
+	return move_cphtr_aux[m][ind];
 }
 
 static uint64_t
@@ -594,6 +549,51 @@ init_htr_eposs(void)
 	}
 }
 
+static void
+init_move_epud(void)
+{
+	/* TODO: save to file? */
+	static int a[12] = { [8] = 8, [9] = 9, [10] = 10, [11] = 11 };
+	static int shortlist[NMOVES] = {
+		[U] = 0, [U2] = 1, [U3] = 2, [D] = 3, [D2] = 4, [D3] = 5,
+		[R2] = 6, [L2] = 7, [F2] = 8, [B2] = 9
+	};
+	uint64_t ui;
+	int j;
+	Move mj;
+	Cube c;
+	CubeArray *arr, *auxarr;
+
+	auxarr = malloc(sizeof(CubeArray));
+	auxarr->ep = a;
+	for (ui = 0; ui < coord_epud.max; ui++) {
+		index_to_perm(ui, 8, a);
+		c = arrays_to_cube(auxarr, pf_ep);
+		for (j = 0; moveset_drud.sorted_moves[j] != NULLMOVE;
+		    j++) {
+			mj = moveset_drud.sorted_moves[j];
+			arr = new_cubearray(apply_move(mj, c), pf_ep);
+			move_epud_aux[shortlist[mj]][ui] =
+			    perm_to_index(arr->ep, 8);
+			free_cubearray(arr, pf_ep);
+		}
+	}
+	free(auxarr);
+}
+
+static void
+init_move_cphtr(void)
+{
+	uint64_t ui;
+	Move j;
+
+	for (ui = 0; ui < BINOM8ON4*6; ui++)
+		for (j = U; j < NMOVES; j++)
+			move_cphtr_aux[j][ui] = cphtr_right_cosets[
+			    cp_mtable[j][cphtr_right_rep[ui]]];
+}
+
+
 void
 init_coord(void)
 {
@@ -608,5 +608,8 @@ init_coord(void)
 	init_cornershtrfin();
 	init_htr_eposs();
 	init_cpud_separate();
+
+	init_move_epud();
+	init_move_cphtr();
 }
 
