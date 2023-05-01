@@ -524,7 +524,8 @@ init_cphtr_right_cosets_color(int i, int d)
 	cphtr_right_rep[d] = i;
 	for (j = 0; j < FACTORIAL8; j++) {
 		if (cphtr_left_cosets[j] == 0) {
-			cp = compose((Cube){.cp = i}, (Cube){.cp = j}).cp;
+			cp = compose_filtered(
+			    (Cube){.cp = i}, (Cube){.cp = j}, pf_cp).cp;
 			cphtr_right_cosets[cp] = d;
 		}
 	}
