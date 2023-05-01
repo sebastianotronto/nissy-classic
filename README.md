@@ -1,10 +1,3 @@
-# WARNING
-
-I am currently rewriting some important parts of the code
-and the git version is not working.
-You can download the last stable version from the
-[download page](https://nissy.tronto.net/download).
-
 # Nissy
 
 A Rubik's cube solver and FMC assistant.
@@ -21,6 +14,9 @@ It can be useful to analyze your DR solves (and more, once I implement more feat
 You can get Nissy from [nissy.tronto.net](https://nissy.tronto.net).
 The download links and installation instructions can be found on the
 [download page](https://nissy.tronto.net/download).
+
+**Note:** This branch of nissy will get only bugfixes and small additions.
+For more info, see [nissy](https://git.tronto.net/nissy).
 
 ## Structure of the code
 
