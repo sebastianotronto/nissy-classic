@@ -40,7 +40,7 @@ Center      where_is_center(Cube cube, Center c);
 Corner      where_is_corner(Cube cube, Corner c);
 Edge        where_is_edge(Cube cube, Edge e);
 
-void        init_cube();
+void        init_cube(void);
 
 #endif
 

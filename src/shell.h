@@ -7,7 +7,7 @@
 #define MAXTOKENLEN         255
 #define MAXNTOKENS          255
 
-bool        checkfiles();
+bool        checkfiles(void);
 void        exec_args(int c, char **v);
 void        launch(bool batchmode);
 

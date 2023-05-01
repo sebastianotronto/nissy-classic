@@ -14,7 +14,7 @@ mymkdir(char *d, int m)
 }
 
 void
-init_env()
+init_env(void)
 {
 	char *nissydata = getenv("NISSYDATA");
 	char *localdata = getenv("XDG_DATA_HOME");

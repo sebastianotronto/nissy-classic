@@ -736,7 +736,7 @@ free_args(CommandArgs *args)
 }
 
 CommandArgs *
-new_args()
+new_args(void)
 {
 	CommandArgs *args = malloc(sizeof(CommandArgs));
 

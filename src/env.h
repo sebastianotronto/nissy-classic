@@ -10,6 +10,6 @@
 
 extern char *tabledir;
 
-void init_env();
+void init_env(void);
 
 #endif

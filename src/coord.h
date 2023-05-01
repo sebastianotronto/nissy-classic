@@ -22,7 +22,6 @@ extern int              cpud_separate_ant[BINOM8ON4];
 extern int              cpud_separate_ind[FACTORIAL8];
 extern int              cornershtrfin_ant[24*24/6];
 
-void        init_coord();
+void        init_coord(void);
 
 #endif
-

@@ -376,7 +376,7 @@ new_alg(char *str)
 }
 
 AlgList *
-new_alglist()
+new_alglist(void)
 {
 	AlgList *ret = malloc(sizeof(AlgList));
 
@@ -515,7 +515,7 @@ init_moveset(Moveset *ms)
 }
 
 void
-init_all_movesets()
+init_all_movesets(void)
 {
 	int i;
 

@@ -30,12 +30,12 @@ static uint64_t    move_htr_drud(Move m, uint64_t ind);
 static uint64_t    move_htrfin(Move m, uint64_t ind);
 static uint64_t    move_cpud_separate(Move m, uint64_t ind);
 
-static void        init_cphtr_cosets();
+static void        init_cphtr_cosets(void);
 static void        init_cphtr_left_cosets_bfs(int i, int c);
 static void        init_cphtr_right_cosets_color(int i, int c);
-static void        init_cpud_separate();
-static void        init_cornershtrfin();
-static void        init_htr_eposs();
+static void        init_cpud_separate(void);
+static void        init_cornershtrfin(void);
+static void        init_htr_eposs(void);
 
 
 /* All sorts of useful costants and tables  **********************************/
@@ -463,7 +463,7 @@ move_cpud_separate(Move m, uint64_t ind)
  *     know how to do.
  */
 static void
-init_cphtr_cosets()
+init_cphtr_cosets(void)
 {
 	unsigned int i; 
 	int c = 0, d = 0;
@@ -531,7 +531,7 @@ init_cphtr_right_cosets_color(int i, int d)
 }
 
 static void
-init_cpud_separate()
+init_cpud_separate(void)
 {
 	unsigned int ui;
 	int i, co[8];
@@ -545,7 +545,7 @@ init_cpud_separate()
 }
 
 static void
-init_cornershtrfin()
+init_cornershtrfin(void)
 {
 	unsigned int i, j;
 	int n, c;
@@ -576,7 +576,7 @@ init_cornershtrfin()
 }
 
 void
-init_htr_eposs()
+init_htr_eposs(void)
 {
 	int ep[12], ep2[12];
 	int eps_solved[4] = {UL, UR, DL, DR};
@@ -594,7 +594,7 @@ init_htr_eposs()
 }
 
 void
-init_coord()
+init_coord(void)
 {
 	static bool initialized = false;
 	if (initialized)

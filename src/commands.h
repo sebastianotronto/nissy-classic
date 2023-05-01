@@ -7,7 +7,7 @@
 #include "steps.h"
 
 void                    free_args(CommandArgs *args);
-CommandArgs *           new_args();
+CommandArgs *           new_args(void);
 
 extern Command *        commands[];
 

@@ -21,6 +21,6 @@ Trans       inverse_trans(Trans t);
 Alg *       rotation_alg(Trans i);
 void        transform_alg(Trans i, Alg *alg);
 
-void        init_trans();
+void        init_trans(void);
 
 #endif

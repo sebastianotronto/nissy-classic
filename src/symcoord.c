@@ -28,14 +28,14 @@ static uint64_t    transform_drudfin_noE_sym16(Trans t, uint64_t ind);
 static uint64_t    transform_nxopt31(Trans t, uint64_t ind);
 
 static void        gensym(SymData *sd);
-static void        init_symc_moves();
-static void        init_symc_trans();
+static void        init_symc_moves(void);
+static void        init_symc_trans(void);
 static bool        read_symdata_file(SymData *sd);
-static bool        read_symc_moves_file();
-static bool        read_symc_trans_file();
+static bool        read_symc_moves_file(void);
+static bool        read_symc_trans_file(void);
 static bool        write_symdata_file(SymData *sd);
-static bool        write_symc_moves_file();
-static bool        write_symc_trans_file();
+static bool        write_symc_moves_file(void);
+static bool        write_symc_trans_file(void);
 
 /* Some tables ***************************************************************/
 
@@ -428,7 +428,7 @@ read_symdata_file(SymData *sd)
 }
 
 static bool
-read_symc_moves_file()
+read_symc_moves_file(void)
 {
 	init_env();
 
@@ -460,7 +460,7 @@ read_symc_moves_file()
 }
 
 static bool
-read_symc_trans_file()
+read_symc_trans_file(void)
 {
 	init_env();
 
@@ -516,7 +516,7 @@ write_symdata_file(SymData *sd)
 }
 
 static bool
-write_symc_moves_file()
+write_symc_moves_file(void)
 {
 	init_env();
 
@@ -548,7 +548,7 @@ write_symc_moves_file()
 }
 
 static bool
-write_symc_trans_file()
+write_symc_trans_file(void)
 {
 	init_env();
 
@@ -577,7 +577,7 @@ write_symc_trans_file()
 }
 
 static void
-init_symc_moves()
+init_symc_moves(void)
 {
 	uint64_t i, ii, coo;
 	Move j;
@@ -609,7 +609,7 @@ init_symc_moves()
 }
 
 void
-init_symc_trans()
+init_symc_trans(void)
 {
 	uint64_t i;
 	int j, cp;
@@ -666,7 +666,7 @@ init_symc_trans()
 }
 
 void
-init_symcoord()
+init_symcoord(void)
 {
 	int i;
 

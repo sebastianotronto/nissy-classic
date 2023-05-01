@@ -29,7 +29,7 @@ char *      move_string(Move m);
 void        movelist_to_position(Move *ml, int *pos);
 void        moveset_to_list(Moveset ms, Move *lst);
 Alg *       new_alg(char *str);
-AlgList *   new_alglist();
+AlgList *   new_alglist(void);
 Alg *       on_inverse(Alg *alg);
 void        print_alg(Alg *alg, bool l);
 void        print_alglist(AlgList *al, bool l);
@@ -37,7 +37,7 @@ void        swapmove(Move *m1, Move *m2);
 Alg *       unniss(Alg *alg);
 
 void        init_moveset(Moveset *ms);
-void        init_all_movesets();
+void        init_all_movesets(void);
 
 #endif
 

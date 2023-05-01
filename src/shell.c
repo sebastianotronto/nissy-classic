@@ -4,7 +4,7 @@ static void             cleanwhitespaces(char *line);
 static int              parseline(char *line, char **v);
 
 bool
-checkfiles()
+checkfiles(void)
 {
 	/* TODO: add more checks (other files, use checksum...) */
 	FILE *f;

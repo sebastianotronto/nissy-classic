@@ -2,9 +2,9 @@
 
 /* Local functions ***********************************************************/
 
-static bool        read_ttables_file();
+static bool        read_ttables_file(void);
 static Cube        rotate_via_compose(Trans r, Cube c, PieceFilter f);
-static bool        write_ttables_file();
+static bool        write_ttables_file(void);
 
 /* Tables and other data *****************************************************/
 
@@ -56,7 +56,7 @@ Move                    moves_ttable[NTRANS][NMOVES];
 /* Local functions implementation ********************************************/
 
 static bool
-read_ttables_file()
+read_ttables_file(void)
 {
 	init_env();
 
@@ -135,7 +135,7 @@ rotate_via_compose(Trans r, Cube c, PieceFilter f)
 }
 
 static bool
-write_ttables_file()
+write_ttables_file(void)
 {
 	init_env();
 
@@ -262,7 +262,8 @@ transform_alg(Trans t, Alg *alg)
 }
 
 void
-init_trans() {
+init_trans(void)
+{
 	static bool initialized = false;
 	if (initialized)
 		return;

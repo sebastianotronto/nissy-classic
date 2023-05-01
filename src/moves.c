@@ -4,8 +4,8 @@
 
 static Cube        apply_move_cubearray(Move m, Cube cube, PieceFilter f);
 static void        cleanup_aux(Alg *alg, Alg *ret, bool inv);
-static bool        read_mtables_file();
-static bool        write_mtables_file();
+static bool        read_mtables_file(void);
+static bool        write_mtables_file(void);
 
 /* Tables and other data *****************************************************/
 
@@ -342,7 +342,7 @@ cleanup_aux(Alg *alg, Alg *ret, bool inv)
 }
 
 static bool
-read_mtables_file()
+read_mtables_file(void)
 {
 	init_env();
 
@@ -391,7 +391,7 @@ read_mtables_file()
 }
 
 static bool
-write_mtables_file()
+write_mtables_file(void)
 {
 	init_env();
 
@@ -440,7 +440,8 @@ write_mtables_file()
 }
 
 void
-init_moves() {
+init_moves(void)
+{
 	static bool initialized = false;
 	if (initialized)
 		return;

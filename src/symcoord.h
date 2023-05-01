@@ -12,6 +12,6 @@ extern Coordinate       coord_nxopt31;
 extern SymData          *all_sd[];
 
 void                    free_sd(SymData *sd);
-void                    init_symcoord();
+void                    init_symcoord(void);
 
 #endif

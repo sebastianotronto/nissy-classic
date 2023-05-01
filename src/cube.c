@@ -2,9 +2,9 @@
 
 /* Local functions ***********************************************************/
 
-static void             init_inverse();
-static bool             read_invtables_file();
-static bool             write_invtables_file();
+static void             init_inverse(void);
+static bool             read_invtables_file(void);
+static bool             write_invtables_file(void);
 
 /* Tables ********************************************************************/
 
@@ -761,7 +761,7 @@ where_is_edge(Cube c, Edge e)
 }
 
 static bool
-read_invtables_file()
+read_invtables_file(void)
 {
 	init_env();
 
@@ -802,7 +802,7 @@ read_invtables_file()
 }
 
 static bool
-write_invtables_file()
+write_invtables_file(void)
 {
 	init_env();
 
@@ -843,7 +843,7 @@ write_invtables_file()
 }
 
 void
-init_inverse()
+init_inverse(void)
 {
 	static bool initialized = false;
 	if (initialized)
@@ -926,7 +926,7 @@ init_inverse()
 }
 
 void
-init_cube()
+init_cube(void)
 {
 	init_inverse();
 }
