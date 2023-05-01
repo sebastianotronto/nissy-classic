@@ -605,11 +605,17 @@ init_coord(void)
 	init_trans();
 
 	init_cphtr_cosets();
+
+printf("%d\n", cphtr_right_rep[0]);
 	init_cornershtrfin();
+printf("%d\n", cphtr_right_rep[0]);
 	init_htr_eposs();
+printf("%d\n", cphtr_right_rep[0]);
 	init_cpud_separate();
+printf("%d\n", cphtr_right_rep[0]);
 
 	init_move_epud();
+printf("%d\n", cphtr_right_rep[0]);
 	init_move_cphtr();
 }
 
