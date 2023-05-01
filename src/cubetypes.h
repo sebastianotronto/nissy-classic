@@ -10,8 +10,6 @@
 #define NROTATIONS           24
 #define entry_group_t        uint8_t /* For pruning tables */
 
-#define MAX_N_COORD          6
-
 /* Enums *********************************************************************/
 
 typedef enum
@@ -28,12 +26,6 @@ corner
 	UFR, UFL, UBL, UBR,
 	DFR, DFL, DBL, DBR
 } Corner;
-
-typedef enum
-coordtype
-{
-	COMP_COORD, SYM_COORD, SYMCOMP_COORD
-} CoordType;
 
 typedef enum
 edge
@@ -84,32 +76,33 @@ trans
 typedef struct alg                Alg;
 typedef struct alglist            AlgList;
 typedef struct alglistnode        AlgListNode;
-typedef struct choicestep         ChoiceStep;
+typedef struct block              Block;
 typedef struct command            Command;
 typedef struct commandargs        CommandArgs;
 typedef struct coordinate         Coordinate;
 typedef struct cube               Cube;
-/*typedef struct dfsarg             DfsArg;*/
-typedef struct fstcube            FstCube;
-typedef struct indexer            Indexer;
-typedef struct movable            Movable;
+typedef struct cubearray          CubeArray;
+typedef struct dfsarg             DfsArg;
+typedef struct estimatedata       EstimateData;
 typedef struct moveset            Moveset;
+typedef struct piecefilter        PieceFilter;
 typedef struct prunedata          PruneData;
 typedef struct solveoptions       SolveOptions;
 typedef struct step               Step;
 typedef struct symdata            SymData;
 typedef struct threaddatasolve    ThreadDataSolve;
 typedef struct threaddatagenpt    ThreadDataGenpt;
-typedef struct transgroup         TransGroup;
 
-typedef bool                 (*Checker)          (Cube *);
-typedef bool                 (*CubeTester)       (Cube *, Alg *);
-/*typedef bool                 (*DfsMover)         (DfsArg *);*/
-typedef void                 (*DfsExtraCopier)   (void *, void *);
-typedef Alg *                (*Validator)        (Alg *);
+typedef Cube                 (*AntiIndexer)      (uint64_t);
+typedef bool                 (*Checker)          (Cube);
+typedef uint64_t             (*CoordMover)       (Move, uint64_t);
+typedef uint64_t             (*CoordTransformer) (Trans, uint64_t);
+typedef int                  (*Estimator)        (DfsArg *);
+typedef bool                 (*Validator)        (Alg *);
 typedef void                 (*Exec)             (CommandArgs *);
+typedef uint64_t             (*Indexer)          (Cube);
 typedef CommandArgs *        (*ArgParser)        (int, char **);
-typedef bool                 (*Tester)           (void);
+typedef int                  (*TransDetector)    (Cube, Trans *);
 typedef int                  (*TransFinder)      (uint64_t, Trans *);
 
 
@@ -122,10 +115,6 @@ alg
 	bool *                    inv;
 	int                       len;
 	int                       allocated;
-	Move *                    move_normal;
-	int                       len_normal;
-	Move *                    move_inverse;
-	int                       len_inverse;
 };
 
 struct
@@ -144,13 +133,11 @@ alglistnode
 };
 
 struct
-choicestep
+block
 {
-	char *                    shortname;
-	char *                    name;
-	Step *                    step[99];
-	Trans                     t[99];
-	char *                    ready_msg;
+	bool                      edge[12];
+	bool                      corner[8];
+	bool                      center[6];
 };
 
 struct
@@ -169,7 +156,7 @@ commandargs
 	bool                      success;
 	Alg *                     scramble;
 	SolveOptions *            opts;
-	ChoiceStep *              cs;
+	Step *                    step;
 	Command *                 command; /* For help */
 	int                       n;
 	char                      scrtype[20];
@@ -180,119 +167,119 @@ commandargs
 struct
 coordinate
 {
-	char *                    name;
-	CoordType                 type;
-	bool                      generated;
-	Indexer *                 i[99];
+	Indexer                   index;
 	uint64_t                  max;
-	uint64_t *                mtable[NMOVES];
-	uint64_t *                ttable[NTRANS];
-	TransGroup *              tgrp;
-	Coordinate *              base[2];
-	uint64_t *                symclass;
-	uint64_t *                symrep;
-	Trans *                   transtorep;
-	Trans *                   ttrep_move[NMOVES];
-	uint64_t *                selfsim;
+	CoordMover                move;
+	CoordTransformer          transform;
+	SymData *                 sd;
+	TransFinder               tfind; /* TODO: should be easy to remove */
+	Coordinate *              base; /* TODO: part of refactor */
 };
 
 struct
 cube
 {
-	int                       ep[12];
-	int                       eo[12];
-	int                       cp[8];
-	int                       co[8];
-	int                       xp[6];
+	int                       epose;
+	int                       eposs;
+	int                       eposm;
+	int                       eofb;
+	int                       eorl;
+	int                       eoud;
+	int                       cp;
+	int                       coud;
+	int                       cofb;
+	int                       corl;
+	int                       cpos;
 };
 
-/*
 struct
-movable
+cubearray
 {
-	uint64_t                  val;
-	Trans                     t;
+	int *                     ep;
+	int *                     eofb;
+	int *                     eorl;
+	int *                     eoud;
+	int *                     cp;
+	int *                     coud;
+	int *                     corl;
+	int *                     cofb;
+	int *                     cpos;
 };
-*/
 
-/*
 struct
 dfsarg
 {
-	Cube *                    cube;
-	Movable                   ind[MAX_N_COORD];
-	Trans                     t;
-	Step *                    s;
+	Step *                    step;
 	SolveOptions *            opts;
+	Trans                     t;
+	Cube                      cube;
+	Cube                      inverse;
 	int                       d;
-	int                       bound;
+	uint64_t                  badmoves;
+	uint64_t                  badmovesinv;
 	bool                      niss;
+	Move                      last1;
+	Move                      last2;
+	Move                      last1inv;
+	Move                      last2inv;
+	EstimateData *            ed;
 	AlgList *                 sols;
 	pthread_mutex_t *         sols_mutex;
 	Alg *                     current_alg;
-	void *                    extra;
-};
-*/
-
-/*
-struct
-dfsarg
-{
-	void *                    cube_data;
-	SolveOptions *            opts;
-	int                       d;
-	int                       bound;
-	bool                      niss;
-	AlgList *                 sols;
-	Alg *                     current_alg;
-	Solver *                  solver;
-	Threader *                threader;
-};
-*/
-
-struct
-fstcube
-{
-	uint16_t                  uf_eofb;
-	uint16_t                  uf_eposepe;
-	uint16_t                  uf_coud;
-	uint16_t                  uf_cp;
-	uint16_t                  fr_eofb;
-	uint16_t                  fr_eposepe;
-	uint16_t                  fr_coud;
-	uint16_t                  rd_eofb;
-	uint16_t                  rd_eposepe;
-	uint16_t                  rd_coud;
 };
 
 struct
-indexer
+estimatedata
 {
-	int                       n;
-	uint64_t                  (*index)(Cube *);
-	void                      (*to_cube)(uint64_t, Cube *);
+	int                       corners;
+	int                       normal_ud;
+	int                       normal_fb;
+	int                       normal_rl;
+	int                       inverse_ud;
+	int                       inverse_fb;
+	int                       inverse_rl;
+	int                       oldret;
 };
 
 struct
 moveset
 {
-	char *                    name;
 	bool                      (*allowed)(Move);
-	bool                      (*can_append)(Alg *, Move, bool);
-	bool                      (*cancel_niss)(Alg *);
+	bool                      (*allowed_next)(Move, Move, Move);
 	Move                      sorted_moves[NMOVES+1];
+	uint64_t                  mask[NMOVES][NMOVES];
+};
+
+struct
+piecefilter
+{
+	bool                      epose;
+	bool                      eposs;
+	bool                      eposm;
+	bool                      eofb;
+	bool                      eorl;
+	bool                      eoud;
+	bool                      cp;
+	bool                      coud;
+	bool                      cofb;
+	bool                      corl;
+	bool                      cpos;
 };
 
 struct
 prunedata
 {
+	char *                    filename;
 	entry_group_t *           ptable;
+	bool                      generated;
 	uint64_t                  n;
 	Coordinate *              coord;
 	Moveset *                 moveset;
-	uint64_t                  count[16];
 	bool                      compact;
 	int                       base;
+	uint64_t                  count[16];
+	PruneData *               fallback;
+	uint64_t                  fbmod;
 };
 
 struct
@@ -313,30 +300,52 @@ solveoptions
 struct
 step
 {
-	Checker                   ready;
+	char *                    shortname;
+	char *                    name;
 	bool                      final;
-	Moveset *                 moveset;
-	int                       n_coord;
-	Coordinate *              coord[MAX_N_COORD];
-	Trans                     coord_trans[MAX_N_COORD];
-	PruneData *               pd[MAX_N_COORD];
-	bool                      pd_compact[MAX_N_COORD];
+	Checker                   is_done;
+	Estimator                 estimate;
+	Checker                   ready;
+	char *                    ready_msg;
 	Validator                 is_valid;
-	/*DfsMover                  custom_move_checkstop;*/
-	DfsExtraCopier            copy_extra;
+	Moveset *                 moveset;
+	Trans                     pre_trans;
+	TransDetector             detect;
+	int                       ntables;
+	PruneData *               tables[10];
 };
 
-/*
+struct
+symdata
+{
+	char *                    filename;
+	bool                      generated;
+	Coordinate *              coord;
+	Coordinate *              sym_coord;
+	int                       ntrans;
+	Trans *                   trans;
+	uint64_t *                class;
+	uint64_t *                unsym;
+	Trans *                   transtorep;
+	uint64_t *                selfsim;
+	CoordTransformer          transform; /* TODO: remove, use that of base coord */
+};
+
 struct
 threaddatasolve
 {
-	DfsArg                    arg;
 	int                       thid;
+	Trans                     t;
+	Cube                      cube;
+	Step *                    step;
+	int                       depth;
+	SolveOptions *            opts;
 	AlgList *                 start;
 	AlgListNode **            node;
+	AlgList *                 sols;
 	pthread_mutex_t *         start_mutex;
+	pthread_mutex_t *         sols_mutex;
 };
-*/
 
 struct
 threaddatagenpt
@@ -348,13 +357,6 @@ threaddatagenpt
 	int                       nchunks;
 	pthread_mutex_t **        mutex;
 	pthread_mutex_t *         upmutex;
-};
-
-struct
-transgroup
-{
-	int                       n;
-	Trans                     t[NTRANS];
 };
 
 #endif

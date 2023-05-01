@@ -1,17 +1,18 @@
 # See LICENSE file for copyright and license details.
 
-VERSION = post-2.0.2
+VERSION = 2.0.3
 
 PREFIX = /usr/local
 MANPREFIX = ${PREFIX}/share/man
 
-CPPFLAGS  = -DVERSION=\"${VERSION}\"
-CFLAGS    = -std=c99 -pthread -pedantic -Wall -Wextra \
-	    -Wno-unused-parameter -O3 ${CPPFLAGS}
-DBGFLAGS  = -std=c99 -pthread -pedantic -Wall -Wextra \
-            -Wno-unused-parameter -g ${CPPFLAGS}
+CPPFLAGS = -DVERSION=\"${VERSION}\"
+CFLAGS   = -std=c99 -pthread -pedantic -Wall -Wextra \
+	   -Wno-unused-parameter -O3 ${CPPFLAGS}
+DBGFLAGS = -std=c99 -pthread -pedantic -Wall -Wextra \
+           -Wno-unused-parameter -g ${CPPFLAGS}
 
 CC = cc
+
 
 all: nissy
 
@@ -24,11 +25,8 @@ nissy.exe:
 debug:
 	${CC} ${DBGFLAGS} -o nissy src/*.c
 
-test:
-	${CC} ${DBGFLAGS} -DTEST -o test src/*.c tests/*.c
-
 clean:
-	rm -rf nissy nissy*.exe nissy*.tar.gz doc/nissy.html doc/nissy.pdf
+	rm -rf nissy nissy*.exe nissy*.tar.gz
 
 dist: clean nissy.exe
 	mkdir -p nissy-${VERSION}
@@ -65,4 +63,5 @@ uninstall:
 	rm -rf ${DESTDIR}${PREFIX}/bin/nissy ${DESTDIR}${MANPREFIX}/man1/nissy.1
 	for s in ${SCRIPTS}; do rm -rf ${DESTDIR}${PREFIX}/bin/$$s; done
 
-.PHONY: all debug test clean dist install uninstall upload
+.PHONY: all debug clean dist install uninstall upload
+

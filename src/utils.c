@@ -1,5 +1,3 @@
-#define UTILS_C
-
 #include "utils.h"
 
 void
@@ -161,24 +159,24 @@ is_perm(int *a, int n)
 {
 	int *aux = malloc(n * sizeof(int));
 	int i;
-	bool ret = true;
 
 	for (i = 0; i < n; i++)
 		aux[i] = 0;
 	
 	for (i = 0; i < n; i++) {
 		if (a[i] < 0 || a[i] >= n)
-			ret = false;
+			return false;
 		else
 			aux[a[i]] = 1;
 	}
 
 	for (i = 0; i < n; i++)
 		if (!aux[i])
-			ret = false;
+			return false;
 
 	free(aux);
-	return ret;
+
+	return true;
 }
 
 bool
@@ -197,7 +195,7 @@ perm_sign(int *a, int n)
 {
 	int i, j, ret = 0;
 
-	if (!is_perm(a, n))
+	if (!is_perm(a,n))
 		return -1;
 
 	for (i = 0; i < n; i++)
@@ -213,7 +211,7 @@ perm_to_index(int *a, int n)
 	int i, j, c, ret = 0;
 
 	if (!is_perm(a, n))
-		return factorial(n);
+		return -1;
 
 	for (i = 0; i < n; i++) {
 		c = 0;

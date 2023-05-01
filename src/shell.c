@@ -1,5 +1,3 @@
-#define SHELL_C
-
 #include "shell.h"
 
 static void             cleanwhitespaces(char *line);
@@ -9,9 +7,7 @@ bool
 checkfiles()
 {
 	/* TODO: add more checks (other files, use checksum...) */
-	/* How to check for pruning tables with new method? */
-	/* Solution: use list of steps */
-	/*
+	FILE *f;
 	char fname[strlen(tabledir)+100];
 	int i;
 
@@ -24,7 +20,6 @@ checkfiles()
 		else
 			fclose(f);
 	}
-	*/
 
 	return true;
 }
@@ -142,14 +137,12 @@ launch(bool batchmode)
 	free(shell_argv);
 }
 
-#ifndef TEST
 int
 main(int argc, char *argv[])
 {
 	char *closing_cmd[1] = { "freemem" };
 
 	init_env();
-	init_trans();
 
 	if (!checkfiles()) {
 		fprintf(stderr,
@@ -174,4 +167,3 @@ main(int argc, char *argv[])
 
 	return 0;
 }
-#endif
