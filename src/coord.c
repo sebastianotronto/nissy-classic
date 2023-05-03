@@ -538,6 +538,11 @@ init_htr_eposs(void)
 	int eps_solved[4] = {UL, UR, DL, DR};
 	unsigned int i, j;
 
+	/* NOTE: we loop over all possible positions of S-slice edges,    *
+	 * although some of them are not possible (because the E-slice    *
+	 * edges are already in the E-slice). Then we discard the invalid *
+	 * configurations by checking that the value returned by          *
+	 * subset_to_index() is acceptable.                               */
 	for (i = 0; i < BINOM12ON4; i++) {
 		for (j = 0; j < 12; j++)
 			ep[j] = ep2[j] = 0;
@@ -545,7 +550,8 @@ init_htr_eposs(void)
 		for (j = 0; j < 8; j++)
 			ep2[j/2 + 4*(j%2)] = ep[j] ? 1 : 0;
 		htr_eposs_ind[i] = subset_to_index(ep2, 8, 4);
-		htr_eposs_ant[htr_eposs_ind[i]] = i*24;
+		if (htr_eposs_ind[i] < (int)BINOM8ON4)
+			htr_eposs_ant[htr_eposs_ind[i]] = i*24;
 	}
 }
 
@@ -605,17 +611,11 @@ init_coord(void)
 	init_trans();
 
 	init_cphtr_cosets();
-
-printf("%d\n", cphtr_right_rep[0]);
 	init_cornershtrfin();
-printf("%d\n", cphtr_right_rep[0]);
 	init_htr_eposs();
-printf("%d\n", cphtr_right_rep[0]);
 	init_cpud_separate();
-printf("%d\n", cphtr_right_rep[0]);
 
 	init_move_epud();
-printf("%d\n", cphtr_right_rep[0]);
 	init_move_cphtr();
 }
 
