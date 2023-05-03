@@ -52,8 +52,17 @@ To get started, head to the <a href="/download/">download</a> page.
 </p>
 
 <p>
-You can also look at its source code by cloning the git repository
-<a href="https://git.tronto.net/nissy-classic">git.tronto.net/nissy-classic</a>
+You can also look at its source code by cloning the git repository:
+</p>
+
+<pre>
+<code>git clone https://git.tronto.net/nissy-classic</code>
+</pre>
+
+<p>
+For a summary of changes and a list of older versions see the bottom of
+this page. Some versions (for example 1.0) are not available directly,
+but can be obtained from the git repository.
 </p>
 
 <h1>Installation</h1>
@@ -67,27 +76,14 @@ You can also look at its source code by cloning the git repository
 <tr>
 	<td><strong>Latest version</strong></td>
 	<td><a href="/nissy-2.0.4.tar.gz">nissy-2.0.4.tar.gz (67Kb)</a></td>
-	<td><a href="/nissy-2.0.4.exe">nissy-2.0.4.exe (780Kb)</a></td>
+	<td><a href="/nissy-2.0.4.exe">nissy-2.0.4.exe (714Kb)</a></td>
 </tr>
 </table>
 
 <p>
 In this page you can find download links (see above),
 <a href="#Installation">installation instructions</a> and
-<a href="#Upgrade">upgrade instructions</a>
-for nissy. If instead you wish to clone the
-<a href="https://git.tronto.net/nissy-classic">git repository</a>,
-you can use git:
-</p>
-
-<pre>
-<code>git clone https://git.tronto.net/nissy-classic</code>
-</pre>
-
-<p>
-For a summary of changes and a list of older versions see below. Some versions
-(for example 1.0) are not available directly, but can be obtained from
-the git repository.
+<a href="#Upgrade">upgrade instructions</a> for nissy.
 </p>
 
 <h2 id="Installation">Installation</h2>
@@ -175,9 +171,10 @@ file.
 A bug in 2.0.3 and earlier versions caused HTR-related tables to be
 generated incorrectly on ARM platforms (Mac M1, Android...).
 If you are upgrading to 2.0.4 on such a device, you need to re-generate
-these tables. You can do this by removing all the files wiht `htr` in their
-name and let nissy re-generate them (after upgrading), or by downloading the
-<a href="/nissy-tables-2.0.4.zip">new tables</a> and replacing the old ones.
+these tables. You can do this by removing all the files wiht <code>htr</code>
+in their name and let nissy re-generate them (after upgrading), or by
+downloading the <a href="/nissy-tables-2.0.4.zip">new tables</a> and
+replacing the old ones.
 </p>
 <p>
 If you already have nissy installed and you want to upgrade to a more
