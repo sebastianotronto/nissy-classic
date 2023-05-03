@@ -26,6 +26,7 @@ static int              estimate_drud_eofb(DfsArg *arg);
 static int              estimate_dr_eofb(DfsArg *arg);
 static int              estimate_drudfin_drud(DfsArg *arg);
 static int              estimate_htr_drud(DfsArg *arg);
+static int              estimate_cp_drud(DfsArg *arg);
 static int              estimate_htrfin_htr(DfsArg *arg);
 static int              estimate_nxopt31_HTM(DfsArg *arg);
 static int              estimate_light_HTM(DfsArg *arg);
@@ -48,6 +49,8 @@ static char check_eo_msg[100]      = "EO must be solved on given axis";
 static char check_dr_msg[100]      = "DR must be solved on given axis";
 static char check_htr_msg[100]     = "HTR must be solved";
 static char check_drany_msg[100]   = "DR must be solved on at least one axis";
+static char check_co_msg[100]      = "CO must be solved on the given axis";
+static char check_coany_msg[100]   = "CO must be solved on at least one axis";
 
 /* Steps *********************************************************************/
 
@@ -886,6 +889,83 @@ htr_drfb = {
 	.ntables   = 1,
 };
 
+/* Corners from DR */
+Step
+corners_dr_any = {
+	.shortname = "corners-dr",
+	.name      = "Solve corners from DR",
+
+	.final     = false,
+	.is_done   = check_corners_HTM,
+	.estimate  = estimate_cp_drud,
+	.ready     = check_coud_HTM,
+	.ready_msg = check_coany_msg,
+	.is_valid  = always_valid,
+	.moveset   = &moveset_drud,
+
+	.detect    = detect_pretrans_drud,
+
+	.tables    = {&pd_cp_drud},
+	.ntables   = 1,
+};
+
+Step
+corners_drud = {
+	.shortname = "corners-drud",
+	.name      = "Solve corners from DR on U/D",
+
+	.final     = false,
+	.is_done   = check_corners_HTM,
+	.estimate  = estimate_cp_drud,
+	.ready     = check_coud_HTM,
+	.ready_msg = check_co_msg,
+	.is_valid  = always_valid,
+	.moveset   = &moveset_drud,
+
+	.pre_trans = uf,
+
+	.tables    = {&pd_cp_drud},
+	.ntables   = 1,
+};
+
+Step
+corners_drrl = {
+	.shortname = "corners-drrl",
+	.name      = "Solve corners from DR on R/L",
+
+	.final     = false,
+	.is_done   = check_corners_HTM,
+	.estimate  = estimate_cp_drud,
+	.ready     = check_coud_HTM,
+	.ready_msg = check_co_msg,
+	.is_valid  = always_valid,
+	.moveset   = &moveset_drud,
+
+	.pre_trans = rf,
+
+	.tables    = {&pd_cp_drud},
+	.ntables   = 1,
+};
+
+Step
+corners_drfb = {
+	.shortname = "corners-drfb",
+	.name      = "Solve corners from DR on F/B",
+
+	.final     = false,
+	.is_done   = check_corners_HTM,
+	.estimate  = estimate_cp_drud,
+	.ready     = check_coud_HTM,
+	.ready_msg = check_co_msg,
+	.is_valid  = always_valid,
+	.moveset   = &moveset_drud,
+
+	.pre_trans = fd,
+
+	.tables    = {&pd_cp_drud},
+	.ntables   = 1,
+};
+
 /* HTR finish */
 Step
 htrfin_htr = {
@@ -955,6 +1035,11 @@ Step *steps[] = {
 	&htr_drud,
 	&htr_drrl,
 	&htr_drfb,
+
+	&corners_dr_any,
+	&corners_drud,
+	&corners_drrl,
+	&corners_drfb,
 
 	&htrfin_htr,
 
@@ -1165,6 +1250,12 @@ static int
 estimate_htr_drud(DfsArg *arg)
 {
 	return ptableval(&pd_htr_drud, arg->cube);
+}
+
+static int
+estimate_cp_drud(DfsArg *arg)
+{
+	return ptableval(&pd_cp_drud, arg->cube);
 }
 
 static int

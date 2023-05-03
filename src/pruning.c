@@ -73,6 +73,13 @@ pd_htr_drud = {
 };
 
 PruneData
+pd_cp_drud = {
+	.filename = "pt_cp_drud",
+	.coord    = &coord_cp,
+	.moveset  = &moveset_drud,
+};
+
+PruneData
 pd_htrfin_htr = {
 	.filename = "pt_htrfin_htr",
 	.coord    = &coord_htrfin,
@@ -99,6 +106,7 @@ PruneData * all_pd[] = {
 	&pd_drud_eofb,
 	&pd_drudfin_noE_sym16_drud,
 	&pd_htr_drud,
+	&pd_cp_drud,
 	&pd_htrfin_htr,
 	&pd_nxopt31_HTM,
 	NULL

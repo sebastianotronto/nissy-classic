@@ -11,6 +11,7 @@ extern PruneData        pd_drud_sym16_HTM;
 extern PruneData        pd_drud_eofb;
 extern PruneData        pd_drudfin_noE_sym16_drud;
 extern PruneData        pd_htr_drud;
+extern PruneData        pd_cp_drud;
 extern PruneData        pd_htrfin_htr;
 extern PruneData        pd_nxopt31_HTM;
 
