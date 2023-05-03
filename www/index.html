@@ -56,7 +56,7 @@ You can also look at its source code by cloning the git repository
 <a href="https://git.tronto.net/nissy-classic">git.tronto.net/nissy-classic</a>
 </p>
 
-<h1>Get Nissy</h1>
+<h1>Installation</h1>
 
 <table class="dltable">
 <tr>
@@ -147,7 +147,7 @@ Once you have installed nissy, run
 <p>
 to generate all the tables that Nissy will ever need.
 Running this command requires around 5.3Gb of RAM, and it can take some time
-(about 40 minutes on my fairly old but decent laptop, with 8 CPU threads).
+(about 90 minutes on my 9 year old but laptop, with 4 CPU threads).
 </p>
 
 <p>
@@ -170,6 +170,15 @@ file.
 </p>
 
 <h2 id="Upgrade">Upgrading</h2>
+<p>
+<strong> Important note for upgrading to 2.0.4:</strong>
+A bug in 2.0.3 and earlier versions caused HTR-related tables to be
+generated incorrectly on ARM platforms (Mac M1, Android...).
+If you are upgrading to 2.0.4 on such a device, you need to re-generate
+these tables. You can do this by removing all the files wiht `htr` in their
+name and let nissy re-generate them (after upgrading), or by downloading the
+<a href="/nissy-tables-2.0.4.zip">new tables</a> and replacing the old ones.
+</p>
 <p>
 If you already have nissy installed and you want to upgrade to a more
 recent version, you can simply repeat the installation process:
