@@ -64,13 +64,13 @@ exec_args(int c, char **v)
 
 	if (cmd == NULL) {
 		fprintf(stderr, "%s: command not found\n", v[0]);
-		return;
+		goto exec_args_end;
 	}
 
 	args = cmd->parse_args(c-1, &v[1]);
 	if (!args->success) {
 		fprintf(stderr, "usage: %s\n", cmd->usage);
-		return;
+		goto exec_args_end;
 	}
 
 	if (args->scrstdin) {
@@ -94,6 +94,8 @@ exec_args(int c, char **v)
 	} else {
 		cmd->exec(args);
 	}
+
+exec_args_end:
 	free_args(args);
 }
 

@@ -9,7 +9,9 @@ CPPFLAGS = -DVERSION=\"${VERSION}\"
 CFLAGS   = -std=c99 -pthread -pedantic -Wall -Wextra \
 	   -Wno-unused-parameter -O3 ${CPPFLAGS}
 DBGFLAGS = -std=c99 -pthread -pedantic -Wall -Wextra \
-           -Wno-unused-parameter -g ${CPPFLAGS}
+           -Wno-unused-parameter -Wno-unused-function \
+	   -fsanitize=address -fsanitize=undefined \
+	   -g3 ${CPPFLAGS}
 
 CC = cc
 
