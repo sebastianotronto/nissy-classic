@@ -64,7 +64,7 @@ exec_args(int c, char **v)
 
 	if (cmd == NULL) {
 		fprintf(stderr, "%s: command not found\n", v[0]);
-		goto exec_args_end;
+		return;
 	}
 
 	args = cmd->parse_args(c-1, &v[1]);
