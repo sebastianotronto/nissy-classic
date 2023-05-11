@@ -90,6 +90,7 @@ exec_args(int c, char **v)
 				free_alg(scramble);
 				args->scramble = NULL;
 			} 
+			fflush(stdout);
 		}
 	} else {
 		cmd->exec(args);
@@ -132,6 +133,8 @@ launch(bool batchmode)
 
 		if (shell_argc > 0)
 			exec_args(shell_argc, shell_argv);
+
+		fflush(stdout);
 	}
 
 	for (i = 0; i < MAXNTOKENS; i++)
