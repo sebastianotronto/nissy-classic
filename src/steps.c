@@ -12,6 +12,7 @@ static bool             check_corners_URF(Cube cube);
 static bool             check_cornershtr(Cube cube);
 static bool             check_eofb(Cube cube);
 static bool             check_drud(Cube cube);
+static bool             check_drud_or_drrl(Cube cube);
 static bool             check_htr(Cube cube);
 
 static int              estimate_eofb_HTM(DfsArg *arg);
@@ -551,7 +552,7 @@ dr_eo = {
 	.name      = "DR without breaking EO (automatically detected)",
 
 	.final     = false,
-	.is_done   = check_drud,
+	.is_done   = check_drud_or_drrl,
 	.estimate  = estimate_dr_eofb,
 	.ready     = check_eofb,
 	.ready_msg = check_eo_msg,
@@ -570,7 +571,7 @@ dr_eofb = {
 	.name      = "DR on U/D or R/L without breaking EO on F/B",
 
 	.final     = false,
-	.is_done   = check_drud,
+	.is_done   = check_drud_or_drrl,
 	.estimate  = estimate_dr_eofb,
 	.ready     = check_eofb,
 	.ready_msg = check_eo_msg,
@@ -589,7 +590,7 @@ dr_eorl = {
 	.name      = "DR on U/D or F/B without breaking EO on R/L",
 
 	.final     = false,
-	.is_done   = check_drud,
+	.is_done   = check_drud_or_drrl,
 	.estimate  = estimate_dr_eofb,
 	.ready     = check_eofb,
 	.ready_msg = check_eo_msg,
@@ -608,7 +609,7 @@ dr_eoud = {
 	.name      = "DR on R/L or F/B without breaking EO on U/D",
 
 	.final     = false,
-	.is_done   = check_drud,
+	.is_done   = check_drud_or_drrl,
 	.estimate  = estimate_dr_eofb,
 	.ready     = check_eofb,
 	.ready_msg = check_eo_msg,
@@ -1113,6 +1114,12 @@ static bool
 check_drud(Cube cube)
 {
 	return cube.eofb == 0 && cube.eorl == 0 && cube.coud == 0;
+}
+
+static bool
+check_drud_or_drrl(Cube cube)
+{
+	return check_drud(cube) || check_drud(apply_trans(rf, cube));
 }
 
 static bool

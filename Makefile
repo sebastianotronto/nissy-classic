@@ -1,6 +1,6 @@
 # See LICENSE file for copyright and license details.
 
-VERSION = 2.0.4
+VERSION = 2.0.5
 
 PREFIX = /usr/local
 MANPREFIX = ${PREFIX}/share/man
@@ -66,4 +66,3 @@ uninstall:
 	for s in ${SCRIPTS}; do rm -rf ${DESTDIR}${PREFIX}/bin/$$s; done
 
 .PHONY: all debug clean dist install uninstall upload
-

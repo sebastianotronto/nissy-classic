@@ -79,8 +79,8 @@ You can get the latest version of nissy at the following links:
 </tr>
 <tr>
 	<td><strong>Latest version</strong></td>
-	<td><a href="/nissy-2.0.4.tar.gz">nissy-2.0.4.tar.gz (67Kb)</a></td>
-	<td><a href="/nissy-2.0.4.exe">nissy-2.0.4.exe (714Kb)</a></td>
+	<td><a href="/nissy-2.0.5.tar.gz">nissy-2.0.5.tar.gz (67Kb)</a></td>
+	<td><a href="/nissy-2.0.5.exe">nissy-2.0.5.exe (714Kb)</a></td>
 </tr>
 </table>
 
@@ -163,6 +163,10 @@ file.
 
 <h2 id="Upgrade">Upgrading</h2>
 <p>
+<strong> Upgrading from 2.0.4 to 2.0.5: </strong>
+Follow the general upgrading instructions below, now other step required.
+</p>
+<p>
 <strong> Important note for upgrading to 2.0.4:</strong>
 A bug in 2.0.3 and earlier versions caused HTR-related tables to be
 generated incorrectly on ARM platforms (Mac M1, Android...).
@@ -173,6 +177,7 @@ downloading the <a href="/nissy-tables-2.0.4.zip">new tables</a> and
 replacing the old ones.
 </p>
 <p>
+<strong> General upgrading instrutions </strong>
 If you already have nissy installed and you want to upgrade to a more
 recent version, you can simply repeat the installation process:
 </p>
@@ -187,7 +192,8 @@ a new folder and run <code>make</code> and <code>make install</code> again.
 </ul>
 <p>
 Between each version new table files might have been added, or old ones
-may be not used anymore. Nissy will deal with this automatically.
+may be not used anymore. Nissy will deal with this automatically unless
+otherwise reported in this page (see above).
 </p>
 
 <h2>Version history</h2>
@@ -199,6 +205,11 @@ may be not used anymore. Nissy will deal with this automatically.
 	<td><strong>Version</strong></td>
 	<td><strong>Date</strong></td>
 	<td><strong>Comment</strong></td>
+</tr>
+<tr>
+	<td><a href="/nissy-2.0.5.tar.gz">2.0.5</a></td>
+	<td>2023-08-16</td>
+	<td>Bugfix: DR from EO did not check both sides</td>
 </tr>
 <tr>
 	<td><a href="/nissy-2.0.4.tar.gz">2.0.4</a></td>
