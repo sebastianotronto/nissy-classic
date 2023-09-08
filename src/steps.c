@@ -14,6 +14,7 @@ static bool             check_eofb(Cube cube);
 static bool             check_drud(Cube cube);
 static bool             check_drud_or_drrl(Cube cube);
 static bool             check_htr(Cube cube);
+static bool             check_drudslice(Cube cube);
 
 static int              estimate_eofb_HTM(DfsArg *arg);
 static int              estimate_coud_HTM(DfsArg *arg);
@@ -26,6 +27,7 @@ static int              estimate_drud_HTM(DfsArg *arg);
 static int              estimate_drud_eofb(DfsArg *arg);
 static int              estimate_dr_eofb(DfsArg *arg);
 static int              estimate_drudfin_drud(DfsArg *arg);
+static int              estimate_drudslice_drud(DfsArg *arg);
 static int              estimate_htr_drud(DfsArg *arg);
 static int              estimate_cp_drud(DfsArg *arg);
 static int              estimate_htrfin_htr(DfsArg *arg);
@@ -736,6 +738,83 @@ drrl_eoud = {
 	.ntables   = 1,
 };
 
+/* DR finish minus slice steps */
+Step
+dranyslice_DR = {
+	.shortname = "drslice",
+	.name      = "DR finish minus slice on any axis without breaking DR",
+
+	.final     = true,
+	.is_done   = check_drudslice,
+	.estimate  = estimate_drudslice_drud,
+	.ready     = check_drud,
+	.ready_msg = check_drany_msg,
+	.is_valid  = always_valid,
+	.moveset   = &moveset_drud,
+
+	.detect    = detect_pretrans_drud,
+
+	.tables    = {&pd_drudfin_noE_sym16_drud},
+	.ntables   = 1,
+};
+
+Step
+drudslice_drud = {
+	.shortname = "drudslice",
+	.name      = "DR finish minus slice on U/D without breaking DR",
+
+	.final     = true,
+	.is_done   = check_drudslice,
+	.estimate  = estimate_drudslice_drud,
+	.ready     = check_drud,
+	.ready_msg = check_dr_msg,
+	.is_valid  = always_valid,
+	.moveset   = &moveset_drud,
+
+	.pre_trans = uf,
+
+	.tables    = {&pd_drudfin_noE_sym16_drud},
+	.ntables   = 1,
+};
+
+Step
+drrlslice_drrl = {
+	.shortname = "drrlslice",
+	.name      = "DR finish minus slice on R/L without breaking DR",
+
+	.final     = true,
+	.is_done   = check_drudslice,
+	.estimate  = estimate_drudslice_drud,
+	.ready     = check_drud,
+	.ready_msg = check_dr_msg,
+	.is_valid  = always_valid,
+	.moveset   = &moveset_drud,
+
+	.pre_trans = rf,
+
+	.tables    = {&pd_drudfin_noE_sym16_drud},
+	.ntables   = 1,
+};
+
+Step
+drfbslice_drfb = {
+	.shortname = "drfbslice",
+	.name      = "DR finish minus slice on F/B without breaking DR",
+
+	.final     = true,
+	.is_done   = check_drudslice,
+	.estimate  = estimate_drudslice_drud,
+	.ready     = check_drud,
+	.ready_msg = check_dr_msg,
+	.is_valid  = always_valid,
+	.moveset   = &moveset_drud,
+
+	.pre_trans = fd,
+
+	.tables    = {&pd_drudfin_noE_sym16_drud},
+	.ntables   = 1,
+};
+
 /* DR finish steps */
 Step
 dranyfin_DR = {
@@ -1032,6 +1111,11 @@ Step *steps[] = {
 	&drrlfin_drrl,
 	&drfbfin_drfb,
 
+	&dranyslice_DR,
+	&drudslice_drud,
+	&drrlslice_drrl,
+	&drfbslice_drfb,
+
 	&htr_any,
 	&htr_drud,
 	&htr_drrl,
@@ -1126,6 +1210,21 @@ static bool
 check_htr(Cube cube)
 {
 	return check_drud(cube) && coord_htr_drud.index(cube) == 0;
+}
+
+static bool
+check_drudslice(Cube cube)
+{
+	int i;
+	Cube aux;
+
+	aux = cube;
+	for (i = 0; i < 4; i++, aux = apply_move(y, aux))
+		if (coord_cp.index(aux) == 0 &&
+		    coord_epud.index(aux) == 0)
+			return true;
+
+	return false;
 }
 
 static int
@@ -1251,6 +1350,19 @@ estimate_drudfin_drud(DfsArg *arg)
 		return val;
 
 	return arg->cube.epose % 24 == 0 ? 0 : 1;
+}
+
+static int
+estimate_drudslice_drud(DfsArg *arg)
+{
+	int i, ret = 20;
+	Cube aux;
+
+	aux = arg->cube;
+	for (i = 0; i < 4; i++, aux = apply_move(y, aux))
+		ret = MIN(ret, ptableval(&pd_drudfin_noE_sym16_drud, aux));
+
+	return ret;
 }
 
 static int
