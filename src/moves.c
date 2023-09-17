@@ -481,7 +481,7 @@ init_moves(void)
 	}
 
 	if (read_mtables_file())
-		return;
+		goto init_moves_end;
 
 	fprintf(stderr, "Cannot load %s, generating it\n", "mtables"); 
 
@@ -541,6 +541,7 @@ init_moves(void)
 	if (!write_mtables_file())
 		fprintf(stderr, "Error writing mtables\n");
 
+init_moves_end:
 	for (i = 0; i < NMOVES; i++)
 		free_alg(equiv_alg[i]);
 }

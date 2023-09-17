@@ -390,6 +390,7 @@ solve(Cube cube, Step *step, SolveOptions *opts)
 {
 	bool ready;
 	int i, d, op, nt;
+	Alg *algaux;
 	AlgList *sols;
 	Cube c;
 	Trans tt[NTRANS];
@@ -417,7 +418,9 @@ solve(Cube cube, Step *step, SolveOptions *opts)
 		for (i = 0; i < nt; i++) {
 			c = apply_trans(tt[i], cube);
 			if (step->is_done(c)) {
-				append_alg(sols, new_alg(""));
+				algaux = new_alg("");
+				append_alg(sols, algaux);
+				free_alg(algaux);
 				return sols;
 			}
 		}

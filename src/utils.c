@@ -3,8 +3,8 @@
 void
 apply_permutation(int *perm, int *set, int n)
 {
-	int *aux = malloc(n * sizeof(int));
 	int i;
+	int aux[n];
 
 	if (!is_perm(perm, n))
 		return;
@@ -13,7 +13,6 @@ apply_permutation(int *perm, int *set, int n)
 		aux[i] = set[perm[i]];
 
 	memcpy(set, aux, n * sizeof(int));
-	free(aux);
 }
 
 int
@@ -53,8 +52,8 @@ factorial(int n)
 void
 index_to_perm(int p, int n, int *r)
 {
-	int *a = malloc(n * sizeof(int));
 	int i, j, c;
+	int a[n];
 
 	for (i = 0; i < n; i++)
 		a[i] = 0;
@@ -72,8 +71,6 @@ index_to_perm(int p, int n, int *r)
 		a[j-1] = 1;
 		p %= factorial(n-i-1);
 	}
-
-	free(a);
 }
 
 void
@@ -143,22 +140,22 @@ int_to_sum_zero_array(int x, int b, int n, int *a)
 int
 invert_digits(int a, int b, int n)
 {
-	int i, ret, *r = malloc(n * sizeof(int));
+	int i, ret;
+	int r[n];
 
 	int_to_digit_array(a, b, n, r);
 	for (i = 0; i < n; i++)
 		r[i] = (b-r[i]) % b;
 
 	ret = digit_array_to_int(r, n, b);
-	free(r);
 	return ret;
 }
 
 bool
 is_perm(int *a, int n)
 {
-	int *aux = malloc(n * sizeof(int));
 	int i;
+	int aux[n];
 
 	for (i = 0; i < n; i++)
 		aux[i] = 0;
@@ -173,8 +170,6 @@ is_perm(int *a, int n)
 	for (i = 0; i < n; i++)
 		if (!aux[i])
 			return false;
-
-	free(aux);
 
 	return true;
 }
