@@ -13,6 +13,12 @@ static int         axis(Move m);
 static void        free_alglistnode(AlgListNode *aln);
 static void        realloc_alg(Alg *alg, int n);
 
+static int         niss_type(Alg *a);
+static void        find_last_moves(Alg *a, bool inv, int *, int *, int *);
+static int         last_move_pair(Alg *a, bool inv);
+static int         compare_algs_firstmoves(Alg * a, Alg *b, bool inv);
+static int         compare_algs(const void * a, const void *b);
+
 /* Movesets ******************************************************************/
 
 Moveset
@@ -457,6 +463,163 @@ realloc_alg(Alg *alg, int n)
 	alg->move = realloc(alg->move, n * sizeof(int));
 	alg->inv  = realloc(alg->inv,  n * sizeof(int));
 	alg->allocated = n;
+}
+
+static int
+niss_type(Alg *a)
+{
+	/* 0 if all moves are on normal, 1 if all on inverse, 2 otherwise */
+
+	int i;
+	bool found_normal = false, found_inverse = false;
+
+	for (i = 0; i < a->len; i++) {
+		found_normal = found_normal || !a->inv[i];
+		found_inverse = found_inverse || a->inv[i];
+	}
+
+	if (found_normal && !found_inverse)
+		return 0;
+	if (!found_normal && found_inverse)
+		return 1;
+	return 2;
+}
+
+static void
+find_last_moves(Alg *a, bool inv, int *n, int *nlast, int *nslast)
+{
+	int i;
+
+	for (i = 0, *n = 0, *nlast = -1, *nslast = -1; i < a->len; i++) {
+		if (inv == a->inv[i]) {
+			(*n)++;
+			*nslast = *nlast;
+			*nlast = i;
+		}
+	}
+}
+
+static int
+last_move_pair(Alg *a, bool inv)
+{
+	/* The number of the move in the moves enum, or a higher number
+	 * (working in base NMOVES) if the last two moves are parallel.
+	 * -1 if there are no moves on the specified side of the alg.
+	 */
+
+	int n, nlast, nslast;
+
+	find_last_moves(a, inv, &n, &nlast, &nslast);
+
+	if (n == 0)
+		return -1;
+	if (nlast == 0 || !commute(a->move[nlast], a->move[nslast]))
+		return a->move[nlast];
+	return a->move[nlast] * NMOVES + a->move[nslast];
+}
+
+static int
+compare_algs_firstmoves(Alg *a, Alg *b, bool inv)
+{
+	/* Compare algs up to the last or the last two moves if parallel */
+
+	int i, j, na, nlasta, nslasta, nb, nlastb, nslastb, ma, mb, m1, m2;
+
+	find_last_moves(a, inv, &na, &nlasta, &nslasta);
+	find_last_moves(b, inv, &nb, &nlastb, &nslastb);
+
+	ma = na > 0 ? ((na > 1 ? nslasta : nlasta) + 1) : 0;
+	mb = nb > 0 ? ((nb > 1 ? nslastb : nlastb) + 1) : 0;
+
+	if (ma == 0 && mb == 0)
+		return 0;
+	if (ma == 0)
+		return -1;
+	if (mb == 0)
+		return 1;
+
+	for (i = 0, j = 0; i < ma && j < mb; i++, j++) {
+		while (a->inv[i] != inv) i++;
+		while (a->inv[j] != inv) j++;
+		m1 = a->move[i];
+		m2 = b->move[j];
+		if (m1 - m2)
+			return m1 - m2;
+	}
+
+	return ma - mb;
+}
+
+static int
+compare_algs(const void *avoid, const void *bvoid)
+{
+	/* We sort a list of algs in a way that makes the most sense for the
+	 * commands and steps where one usually wants many results, for
+	 * example EO and DR. We sort by, in order:
+	 *   1. Length of the solution
+	 *   2. NISS type (first algs that are all on normal, then those that
+	 *      are all on inverse, then those that use NISS)
+	 *   3. Last move on normal, or last two moves if they are parallel
+	 *   4. All other moves on normal scramble
+	 *   5. Last move on inverse, or last two moves if they are parallel
+	 *   6. All other moves on inverse
+	 */
+
+	Alg *a = *(Alg **)avoid;
+	Alg *b = *(Alg **)bvoid;
+
+	int ntype_a, ntype_b, last_a, last_b, cmp;
+
+	/* 1. Compare length */
+	if (a->len - b->len)
+		return a->len - b->len;
+
+	/* 2. Algs have the same length, compare NISS type */
+	ntype_a = niss_type(a);
+	ntype_b = niss_type(b);
+	if (ntype_a - ntype_b)
+		return ntype_a - ntype_b;
+
+	/* 3. Algs have same NISS type, compare last moves on normal */
+	last_a = last_move_pair(a, false);
+	last_b = last_move_pair(b, false);
+	if (last_a - last_b)
+		return last_a - last_b;
+
+	/* 4. Algs have same last moves on normal, compare all other moves */
+	cmp = compare_algs_firstmoves(a, b, false);
+	if (cmp)
+		return cmp;
+
+	/* 5. Algs have same moves on normal, compare last on inverse */
+	last_a = last_move_pair(a, true);
+	last_b = last_move_pair(b, true);
+	if (last_a - last_b)
+		return last_a - last_b;
+
+	/* 6. Algs have same last moves on inverse, compare other */
+	cmp = compare_algs_firstmoves(a, b, true);
+	if (cmp)
+		return cmp;
+
+	/* Algs are equal */
+	return 0;
+}
+
+void
+sort_alglist(AlgList *al)
+{
+	int i, n = al->len;
+	Alg* alg_array[n];
+	AlgListNode *node;
+
+	for (i = 0, node = al->first; i < n; i++, node = node->next)
+		alg_array[i] = node->alg;
+
+	qsort(alg_array, n, sizeof(Alg *), &compare_algs);
+
+	for (i = 0, node = al->first; i < n; i++, node = node->next)
+		node->alg = alg_array[i];
 }
 
 void

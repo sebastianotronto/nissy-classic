@@ -398,10 +398,12 @@ solve_exec(CommandArgs *args)
 	c = apply_alg(args->scramble, (Cube){0});
 	sols = solve(c, args->step, args->opts);
 
-	if (args->opts->count_only)
+	if (args->opts->count_only) {
 		printf("%d\n", sols->len);
-	else
+	} else {
+		sort_alglist(sols);
 		print_alglist(sols, args->opts->print_number);
+	}
 
 	free_alglist(sols);
 }
