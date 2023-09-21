@@ -162,6 +162,7 @@ commandargs
 	char                      scrtype[20];
 	bool                      scrstdin;
 	bool                      header;
+	PruneData *               pd;
 };
 
 struct

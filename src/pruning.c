@@ -405,7 +405,10 @@ print_ptable(PruneData *pd)
 	printf("Table %s\n", pd->filename);
 	printf("Base value: %d\n", pd->base);
 	for (i = 0; i < 16; i++)
-		printf("%2" PRIu64 "\t%10" PRIu64 "\n", i, pd->count[i]);
+		if (pd->count[i] != 0)
+			printf("%2" PRIu64 "\t%10" PRIu64 "\n",
+			    i, pd->count[i]);
+	printf("Total: %" PRIu64 "\n", pd->coord->max);
 }
 
 uint64_t

@@ -6,6 +6,7 @@ CommandArgs *           gen_parse_args(int c, char **v);
 CommandArgs *           help_parse_args(int c, char **v);
 CommandArgs *           parse_only_scramble(int c, char **v);
 CommandArgs *           parse_no_arg(int c, char **v);
+CommandArgs *           ptable_parse_args(int c, char **v);
 CommandArgs *           solve_parse_args(int c, char **v);
 CommandArgs *           scramble_parse_args(int c, char **v);
 
@@ -20,6 +21,7 @@ static void             steps_exec(CommandArgs *args);
 static void             commands_exec(CommandArgs *args);
 static void             freemem_exec(CommandArgs *args);
 static void             print_exec(CommandArgs *args);
+static void             ptable_exec(CommandArgs *args);
 static void             twophase_exec(CommandArgs *args);
 static void             help_exec(CommandArgs *args);
 static void             quit_exec(CommandArgs *args);
@@ -107,6 +109,15 @@ print_cmd = {
 };
 
 Command
+ptable_cmd = {
+	.name        = "ptable",
+	.usage       = "ptable [TABLE]",
+	.description = "Print information on pruning tables",
+	.parse_args  = ptable_parse_args,
+	.exec        = ptable_exec,
+};
+
+Command
 help_cmd = {
 	.name        = "help",
 	.usage       = "help [COMMAND]",
@@ -167,6 +178,7 @@ Command *commands[] = {
 	&help_cmd,
 	&invert_cmd,
 	&print_cmd,
+	&ptable_cmd,
 	&quit_cmd,
 	&solve_cmd,
 	&scramble_cmd,
@@ -384,6 +396,24 @@ parse_no_arg(int c, char **v)
 	return a;
 }
 
+CommandArgs *
+ptable_parse_args(int c, char **v)
+{
+	int i;
+	CommandArgs *a = new_args();
+
+	if (c == 1) {
+		for (i = 0; all_pd[i] != NULL; i++)
+			if (!strcmp(v[0], all_pd[i]->filename))
+				a->pd = all_pd[i];
+		if (a->pd == NULL)
+			fprintf(stderr, "%s: pruning table not found\n", v[0]);
+	}
+
+	a->success = c == 0 || (c == 1 && a->pd != NULL);
+	return a;
+}
+
 /* Exec functions implementation *********************************************/
 
 static void
@@ -584,6 +614,23 @@ print_exec(CommandArgs *args)
 }
 
 static void
+ptable_exec(CommandArgs *args)
+{
+	int i = 0;
+	if (args->pd == NULL) {
+		printf("Available pruning tables:\n");
+		for (i = 0; all_pd[i] != NULL; i++)
+			printf("\t%s\n", all_pd[i]->filename);
+		printf("Use ptable [TABLE] to see the table distribution"
+		       " and other information\n");
+	} else {
+		genptable(args->pd, args->opts->nthreads);
+		print_ptable(args->pd);
+	}
+}
+
+
+static void
 twophase_exec(CommandArgs *args)
 {
 	Cube c;
@@ -750,6 +797,7 @@ new_args(void)
 	/* step and command are static */
 	args->step = steps[0]; /* default: first step in list */
 	args->command = NULL;
+	args->pd = NULL;
 
 	return args;
 }
