@@ -1678,9 +1678,10 @@ prepare_step(Step *step, SolveOptions *opts)
 {
 	int i;
 
-	if (step->final && opts->can_niss) {
-		opts->can_niss = false;
-		fprintf(stderr, "Step is final, NISS not used (-n ignored)\n");
+	if (step->final && opts->nisstype != NORMAL) {
+		opts->nisstype = NORMAL;
+		fprintf(stderr, "Step is final, NISS not used"
+				" (-N and -L ignored)\n");
 	}
 
 	for (i = 0; i < step->ntables; i++) {

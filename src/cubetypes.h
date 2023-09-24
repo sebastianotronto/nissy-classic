@@ -70,6 +70,12 @@ trans
 	bu_mirror, br_mirror, bd_mirror, bl_mirror,
 } Trans;
 
+typedef enum
+niss_type
+{
+	NORMAL, LINEAR, NISS
+} NissType;
+
 
 /* Typedefs ******************************************************************/
 
@@ -291,7 +297,7 @@ solveoptions
 	int                       max_solutions;
 	int                       nthreads;
 	int                       optimal;
-	bool                      can_niss;
+	NissType                  nisstype;
 	bool                      verbose;
 	bool                      all;
 	bool                      print_number;

@@ -210,7 +210,7 @@ solve_parse_args(int c, char **v)
 	a->opts->max_solutions = 1;
 	a->opts->nthreads      = 1;
 	a->opts->optimal       = -1;
-	a->opts->can_niss      = false;
+	a->opts->nisstype      = NORMAL;
 	a->opts->verbose       = false;
 	a->opts->all           = false;
 	a->opts->print_number  = true;
@@ -272,7 +272,10 @@ solve_parse_args(int c, char **v)
 			a->opts->optimal = val;
 			infinitesols = true;
 		} else if (!strcmp(v[i], "-N")) {
-			a->opts->can_niss = true;
+			a->opts->nisstype = NISS;
+		} else if (!strcmp(v[i], "-L")) {
+			if (a->opts->nisstype != NISS)
+				a->opts->nisstype = LINEAR;
 		} else if (!strcmp(v[i], "-i")) {
 			a->scrstdin = true;
 		} else if (!strcmp(v[i], "-v")) {
