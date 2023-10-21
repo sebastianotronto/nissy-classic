@@ -15,7 +15,7 @@ static void        realloc_alg(Alg *alg, int n);
 
 static int         niss_type(Alg *a);
 static void        find_last_moves(Alg *a, bool inv, int *, int *, int *);
-static int         last_move_pair(Alg *a, bool inv);
+static int64_t     last_move_pair(Alg *a, bool inv);
 static int         compare_algs_firstmoves(Alg * a, Alg *b, bool inv);
 static int         compare_algs(const void * a, const void *b);
 
@@ -499,23 +499,28 @@ find_last_moves(Alg *a, bool inv, int *n, int *nlast, int *nslast)
 	}
 }
 
-static int
+static int64_t
 last_move_pair(Alg *a, bool inv)
 {
-	/* The number of the move in the moves enum, or a higher number
-	 * (working in base NMOVES) if the last two moves are parallel.
-	 * -1 if there are no moves on the specified side of the alg.
-	 */
+	/* Order: _ F*, _ B*, F* B*, ... U* D* */
 
-	int n, nlast, nslast;
+	static int bit[] = {
+		[F] = 16, [B] = 16,
+		[R] = 18, [L] = 18,
+		[U] = 20, [D] = 20 
+	};
+	int n, nlast, nslast, last, slast;
 
 	find_last_moves(a, inv, &n, &nlast, &nslast);
 
 	if (n == 0)
 		return -1;
-	if (nlast == 0 || !commute(a->move[nlast], a->move[nslast]))
-		return a->move[nlast];
-	return a->move[nlast] * NMOVES + a->move[nslast];
+
+	last = a->move[nlast];
+	slast = (nslast != -1 && commute(a->move[nlast], a->move[nslast])) ?
+	    a->move[nslast] : 0;
+
+	return (slast * NMOVES + last) + (1LL << bit[base_move(last)]);
 }
 
 static int
