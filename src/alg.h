@@ -12,6 +12,7 @@ extern Moveset          moveset_HTM;
 extern Moveset          moveset_URF;
 extern Moveset          moveset_eofb;
 extern Moveset          moveset_drud;
+extern Moveset          moveset_drud_noD;
 extern Moveset          moveset_htr;
 
 void        append_alg(AlgList *l, Alg *alg);

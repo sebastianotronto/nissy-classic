@@ -6,6 +6,7 @@ static bool        allowed_HTM(Move m);
 static bool        allowed_URF(Move m);
 static bool        allowed_eofb(Move m);
 static bool        allowed_drud(Move m);
+static bool        allowed_drud_noD(Move m);
 static bool        allowed_htr(Move m);
 static bool        allowed_next_HTM(Move l2, Move l1, Move m);
 static int         axis(Move m);
@@ -46,6 +47,12 @@ moveset_drud = {
 };
 
 Moveset
+moveset_drud_noD = {
+	.allowed      = allowed_drud_noD,
+	.allowed_next = allowed_next_HTM,
+};
+
+Moveset
 moveset_htr = {
 	.allowed      = allowed_htr,
 	.allowed_next = allowed_next_HTM,
@@ -57,6 +64,7 @@ static Moveset * all_ms[] = {
 	&moveset_URF,
 	&moveset_eofb,
 	&moveset_drud,
+	&moveset_drud_noD,
 	&moveset_htr,
 };
 
@@ -91,6 +99,15 @@ allowed_drud(Move m)
 	Move b = base_move(m);
 
 	return b == U || b == D ||
+	       ((b == R || b == L || b == F || b == B) && m == b + 1);
+}
+
+static bool
+allowed_drud_noD(Move m)
+{
+	Move b = base_move(m);
+
+	return b == U ||
 	       ((b == R || b == L || b == F || b == B) && m == b + 1);
 }
 

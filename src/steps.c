@@ -751,7 +751,7 @@ dranyslice_DR = {
 	.ready     = check_drud,
 	.ready_msg = check_drany_msg,
 	.is_valid  = always_valid,
-	.moveset   = &moveset_drud,
+	.moveset   = &moveset_drud_noD,
 
 	.detect    = detect_pretrans_drud,
 
@@ -770,7 +770,7 @@ drudslice_drud = {
 	.ready     = check_drud,
 	.ready_msg = check_dr_msg,
 	.is_valid  = always_valid,
-	.moveset   = &moveset_drud,
+	.moveset   = &moveset_drud_noD,
 
 	.pre_trans = uf,
 
@@ -789,7 +789,7 @@ drrlslice_drrl = {
 	.ready     = check_drud,
 	.ready_msg = check_dr_msg,
 	.is_valid  = always_valid,
-	.moveset   = &moveset_drud,
+	.moveset   = &moveset_drud_noD,
 
 	.pre_trans = rf,
 
@@ -808,7 +808,7 @@ drfbslice_drfb = {
 	.ready     = check_drud,
 	.ready_msg = check_dr_msg,
 	.is_valid  = always_valid,
-	.moveset   = &moveset_drud,
+	.moveset   = &moveset_drud_noD,
 
 	.pre_trans = fd,
 
