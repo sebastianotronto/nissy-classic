@@ -38,6 +38,7 @@ static int              estimate_nxoptlike(DfsArg *arg, PruneData *pd);
 
 static bool             always_valid(Alg *alg);
 static bool             validate_singlecw_ending(Alg *alg);
+static bool             validate_htr_qt(Alg *alg);
 
 /* Pre-transformation detectors **********************************************/
 
@@ -407,7 +408,7 @@ cornershtr_HTM = {
 	.is_done   = check_cornershtr,
 	.estimate  = estimate_cornershtr_HTM,
 	.ready     = NULL,
-	.is_valid  = validate_singlecw_ending,
+	.is_valid  = validate_htr_qt,
 	.moveset   = &moveset_HTM,
 
 	.pre_trans = uf,
@@ -903,7 +904,7 @@ htr_any = {
 	.estimate  = estimate_htr_drud,
 	.ready     = check_drud,
 	.ready_msg = check_drany_msg,
-	.is_valid  = validate_singlecw_ending,
+	.is_valid  = validate_htr_qt,
 	.moveset   = &moveset_drud,
 
 	.detect    = detect_pretrans_drud,
@@ -922,7 +923,7 @@ htr_drud = {
 	.estimate  = estimate_htr_drud,
 	.ready     = check_drud,
 	.ready_msg = check_dr_msg,
-	.is_valid  = validate_singlecw_ending,
+	.is_valid  = validate_htr_qt,
 	.moveset   = &moveset_drud,
 
 	.pre_trans = uf,
@@ -941,7 +942,7 @@ htr_drrl = {
 	.estimate  = estimate_htr_drud,
 	.ready     = check_drud,
 	.ready_msg = check_dr_msg,
-	.is_valid  = validate_singlecw_ending,
+	.is_valid  = validate_htr_qt,
 	.moveset   = &moveset_drud,
 
 	.pre_trans = rf,
@@ -960,7 +961,7 @@ htr_drfb = {
 	.estimate  = estimate_htr_drud,
 	.ready     = check_drud,
 	.ready_msg = check_dr_msg,
-	.is_valid  = validate_singlecw_ending,
+	.is_valid  = validate_htr_qt,
 	.moveset   = &moveset_drud,
 
 	.pre_trans = fd,
@@ -1597,6 +1598,40 @@ validate_singlecw_ending(Alg *alg)
 	inv = l1i==base_move(l1i) && (!commute(l1i,l2i)||l2i==base_move(l2i));
 
 	return nor && inv;
+}
+
+static bool
+validate_htr_qt(Alg *alg)
+{
+	int i, lastqt, lastqt_n, lastqt_i;
+	Move m, b;
+
+	if (!validate_singlecw_ending(alg))
+		return false;
+
+	lastqt_n = lastqt_i = -1;
+	for (i = 0; i < alg->len; i++) {
+		m = alg->move[i];
+		b = base_move(m);
+		if (m == b+1)
+			continue;
+		if (alg->inv[i] && lastqt_i == -1)
+			lastqt_i = i;
+		if (!alg->inv[i])
+			lastqt_n = i;
+	}
+	lastqt = lastqt_n == -1 ? lastqt_i : lastqt_n;
+
+	for (i = 0; i < alg->len; i++) {
+		m = alg->move[i];
+		b = base_move(m);
+		if (m == b+1 || i == lastqt)
+			continue;
+		if (b == D || b == L || b == B)
+			return false;
+	}
+
+	return true;
 }
 
 /* Pre-transformation detectors **********************************************/
