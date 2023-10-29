@@ -632,7 +632,7 @@ void
 sort_alglist(AlgList *al)
 {
 	int i, n = al->len;
-	Alg* alg_array[n];
+	Alg* alg_array[n+1];
 	AlgListNode *node;
 
 	for (i = 0, node = al->first; i < n; i++, node = node->next)

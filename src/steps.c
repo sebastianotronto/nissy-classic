@@ -33,7 +33,6 @@ static int              estimate_cp_drud(DfsArg *arg);
 static int              estimate_htrfin_htr(DfsArg *arg);
 static int              estimate_nxopt31_HTM(DfsArg *arg);
 static int              estimate_light_HTM(DfsArg *arg);
-
 static int              estimate_nxoptlike(DfsArg *arg, PruneData *pd);
 
 static bool             always_valid(Alg *alg);
@@ -976,7 +975,7 @@ corners_dr_any = {
 	.shortname = "corners-dr",
 	.name      = "Solve corners from DR",
 
-	.final     = false,
+	.final     = true,
 	.is_done   = check_corners_HTM,
 	.estimate  = estimate_cp_drud,
 	.ready     = check_coud_HTM,
@@ -995,7 +994,7 @@ corners_drud = {
 	.shortname = "corners-drud",
 	.name      = "Solve corners from DR on U/D",
 
-	.final     = false,
+	.final     = true,
 	.is_done   = check_corners_HTM,
 	.estimate  = estimate_cp_drud,
 	.ready     = check_coud_HTM,
@@ -1014,7 +1013,7 @@ corners_drrl = {
 	.shortname = "corners-drrl",
 	.name      = "Solve corners from DR on R/L",
 
-	.final     = false,
+	.final     = true,
 	.is_done   = check_corners_HTM,
 	.estimate  = estimate_cp_drud,
 	.ready     = check_coud_HTM,
@@ -1033,7 +1032,7 @@ corners_drfb = {
 	.shortname = "corners-drfb",
 	.name      = "Solve corners from DR on F/B",
 
-	.final     = false,
+	.final     = true,
 	.is_done   = check_corners_HTM,
 	.estimate  = estimate_cp_drud,
 	.ready     = check_coud_HTM,
@@ -1569,7 +1568,6 @@ estimate_nxoptlike(DfsArg *arg, PruneData *pd)
 
 	return arg->ed->oldret = ret;
 }
-
 
 static bool
 always_valid(Alg *alg)

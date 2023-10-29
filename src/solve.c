@@ -11,11 +11,11 @@ static bool        dfs_check_solved(DfsArg *arg);
 static bool        dfs_switch(DfsArg *arg);
 static void        dfs_niss(DfsArg *arg);
 static bool        dfs_stop(DfsArg *arg);
+static bool        dfs_useless_niss(DfsArg *arg);
 static void *      instance_thread(void *arg);
 static void        invert_branch(DfsArg *arg);
 static void        multidfs(Cube c, Trans t, Step *s, SolveOptions *opts,
                             AlgList *sols, int d);
-static bool        niss_makes_sense(DfsArg *arg);
 static bool        solvestop(int d, int op, SolveOptions *opts, AlgList *sols);
 
 /* Local functions ***********************************************************/
@@ -97,7 +97,7 @@ dfs(DfsArg *arg)
 		invert_branch(arg);
 	dfs_branch(arg);
 
-	if (arg->opts->nisstype == NISS && !arg->niss && niss_makes_sense(arg))
+	if (arg->opts->nisstype == NISS && !arg->niss && !arg->step->final)
 		dfs_niss(arg);
 
 	if (sw)
@@ -139,7 +139,7 @@ dfs_check_solved(DfsArg *arg)
 	if (!arg->step->is_done(arg->cube))
 		return false;
 
-	if (arg->current_alg->len == arg->d) {
+	if (arg->current_alg->len == arg->d && !dfs_useless_niss(arg)) {
 		if ((arg->step->is_valid(arg->current_alg) || arg->opts->all)
 		    && (!arg->step->final || !cancel_niss(arg))) {
 
@@ -231,6 +231,20 @@ dfs_switch(DfsArg *arg)
 	swapu64(&(arg->badmoves), &(arg->badmovesinv));
 
 	return bi < bn;
+}
+
+static bool
+dfs_useless_niss(DfsArg *arg)
+{
+	Cube c;
+	Move m = arg->last1inv;
+
+	if (m == NULLMOVE || !arg->niss)
+		return false;
+
+	c = apply_move(inverse_move(m), arg->cube);
+
+	return arg->step->is_done(c);
 }
 
 static void *
@@ -360,15 +374,6 @@ multidfs(Cube c, Trans tr, Step *s, SolveOptions *opts, AlgList *sols, int d)
 	free(node);
 	free(start_mutex);
 	free(sols_mutex);
-}
-
-static bool
-niss_makes_sense(DfsArg *arg)
-{
-	Cube testcube;
-
-	testcube = apply_move(inverse_move(arg->last1), (Cube){0});
-	return arg->current_alg->len == 0 || !arg->step->is_done(testcube);
 }
 
 static bool
