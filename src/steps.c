@@ -37,7 +37,7 @@ static int              estimate_nxoptlike(DfsArg *arg, PruneData *pd);
 
 static bool             always_valid(Alg *alg);
 static bool             validate_singlecw_ending(Alg *alg);
-static bool             validate_htr_qt(Alg *alg);
+static bool             validate_htr(Alg *alg);
 
 /* Pre-transformation detectors **********************************************/
 
@@ -407,7 +407,7 @@ cornershtr_HTM = {
 	.is_done   = check_cornershtr,
 	.estimate  = estimate_cornershtr_HTM,
 	.ready     = NULL,
-	.is_valid  = validate_htr_qt,
+	.is_valid  = validate_htr,
 	.moveset   = &moveset_HTM,
 
 	.pre_trans = uf,
@@ -903,7 +903,7 @@ htr_any = {
 	.estimate  = estimate_htr_drud,
 	.ready     = check_drud,
 	.ready_msg = check_drany_msg,
-	.is_valid  = validate_htr_qt,
+	.is_valid  = validate_htr,
 	.moveset   = &moveset_drud,
 
 	.detect    = detect_pretrans_drud,
@@ -922,7 +922,7 @@ htr_drud = {
 	.estimate  = estimate_htr_drud,
 	.ready     = check_drud,
 	.ready_msg = check_dr_msg,
-	.is_valid  = validate_htr_qt,
+	.is_valid  = validate_htr,
 	.moveset   = &moveset_drud,
 
 	.pre_trans = uf,
@@ -941,7 +941,7 @@ htr_drrl = {
 	.estimate  = estimate_htr_drud,
 	.ready     = check_drud,
 	.ready_msg = check_dr_msg,
-	.is_valid  = validate_htr_qt,
+	.is_valid  = validate_htr,
 	.moveset   = &moveset_drud,
 
 	.pre_trans = rf,
@@ -960,7 +960,7 @@ htr_drfb = {
 	.estimate  = estimate_htr_drud,
 	.ready     = check_drud,
 	.ready_msg = check_dr_msg,
-	.is_valid  = validate_htr_qt,
+	.is_valid  = validate_htr,
 	.moveset   = &moveset_drud,
 
 	.pre_trans = fd,
@@ -1599,9 +1599,9 @@ validate_singlecw_ending(Alg *alg)
 }
 
 static bool
-validate_htr_qt(Alg *alg)
+validate_htr(Alg *alg)
 {
-	int i, lastqt, lastqt_n, lastqt_i;
+	int i, lastqt_n, lastqt_i;
 	Move m, b;
 
 	if (!validate_singlecw_ending(alg))
@@ -1618,16 +1618,11 @@ validate_htr_qt(Alg *alg)
 		if (!alg->inv[i])
 			lastqt_n = i;
 	}
-	lastqt = lastqt_n == -1 ? lastqt_i : lastqt_n;
 
-	for (i = 0; i < alg->len; i++) {
-		m = alg->move[i];
-		b = base_move(m);
-		if (m == b+1 || i == lastqt)
-			continue;
-		if (b == D || b == L || b == B)
+	for (i = 0; i < alg->len; i++)
+		if (base_move(alg->move[i]) == D &&
+		    i != lastqt_i && i != lastqt_n)
 			return false;
-	}
 
 	return true;
 }
