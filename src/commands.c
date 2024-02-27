@@ -435,7 +435,7 @@ solve_exec(CommandArgs *args)
 		printf("%d\n", sols->len);
 	} else {
 		sort_alglist(sols);
-		print_alglist(sols, args->opts->print_number);
+		print_alglist(stdout, sols, args->opts->print_number);
 	}
 
 	free_alglist(sols);
@@ -543,7 +543,7 @@ scramble_exec(CommandArgs *args)
 			free_alg(aux);
 			free_alg(ruf);
 		}
-		print_alg(scr, false);
+		print_alg(stdout, scr, false);
 		free_alg(scr);
 	}
 }
@@ -570,7 +570,7 @@ invert_exec(CommandArgs *args)
 	Alg *inv;
 
 	inv = inverse_alg(args->scramble);
-	print_alg(inv, false);
+	print_alg(stdout, inv, false);
 
 	free_alg(inv);
 }
@@ -645,7 +645,7 @@ twophase_exec(CommandArgs *args)
 	c = apply_alg(args->scramble, (Cube){0});
 	sol = solve_2phase(c, 1);
 
-	print_alg(sol, false);
+	print_alg(stdout, sol, false);
 	free_alg(sol);
 }
 
@@ -685,7 +685,7 @@ cleanup_exec(CommandArgs *args)
 	init_moves();
 
 	alg = cleanup(args->scramble);
-	print_alg(alg, false);
+	print_alg(stdout, alg, false);
 
 	free_alg(alg);
 }
@@ -696,7 +696,7 @@ unniss_exec(CommandArgs *args)
 	Alg *aux;
 
 	aux = unniss(args->scramble);
-	print_alg(aux, false);
+	print_alg(stdout, aux, false);
 	free(aux);
 }
 

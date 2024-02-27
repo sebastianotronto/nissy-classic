@@ -423,7 +423,7 @@ on_inverse(Alg *alg)
 }
 
 void
-print_alg(Alg *alg, bool l)
+print_alg(FILE *out, Alg *alg, bool l)
 {
 	char fill[4];
 	int i;
@@ -437,25 +437,25 @@ print_alg(Alg *alg, bool l)
 		if (niss == alg->inv[i])
 			strcpy(fill, i == 0 ? "" : " ");
 
-		printf("%s%s", fill, move_string(alg->move[i]));
+		fprintf(out, "%s%s", fill, move_string(alg->move[i]));
 		niss = alg->inv[i];
 	}
 
 	if (niss)
-		printf(")");
+		fprintf(out, ")");
 	if (l)
-		printf(" (%d)", alg->len);
+		fprintf(out, " (%d)", alg->len);
 
-	printf("\n");
+	fprintf(out, "\n");
 }
 
 void
-print_alglist(AlgList *al, bool l)
+print_alglist(FILE *out, AlgList *al, bool l)
 {
 	AlgListNode *i;
 
 	for (i = al->first; i != NULL; i = i->next)
-		print_alg(i->alg, l);
+		print_alg(out, i->alg, l);
 }
 
 static void

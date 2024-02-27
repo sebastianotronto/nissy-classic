@@ -156,7 +156,8 @@ dfs_check_solved(DfsArg *arg)
 					inplace(unniss, arg->sols->last->alg);
 
 				if (arg->opts->verbose)
-					print_alg(arg->sols->last->alg, false);
+					print_alg(stderr,
+					    arg->sols->last->alg, false);
 			}
 
 			pthread_mutex_unlock(arg->sols_mutex);
