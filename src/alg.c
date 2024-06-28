@@ -58,7 +58,6 @@ moveset_htr = {
 	.allowed_next = allowed_next_HTM,
 };
 
-static int nmoveset = 5;
 static Moveset * all_ms[] = {
 	&moveset_HTM,
 	&moveset_URF,
@@ -66,6 +65,7 @@ static Moveset * all_ms[] = {
 	&moveset_drud,
 	&moveset_drud_noD,
 	&moveset_htr,
+	NULL
 };
 
 /* Functions *****************************************************************/
@@ -704,6 +704,6 @@ init_all_movesets(void)
 {
 	int i;
 
-	for (i = 0; i < nmoveset; i++)
+	for (i = 0; all_ms[i] != NULL; i++)
 		init_moveset(all_ms[i]);
 }
