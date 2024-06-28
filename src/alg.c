@@ -58,7 +58,7 @@ moveset_htr = {
 	.allowed_next = allowed_next_HTM,
 };
 
-static int nmoveset = 5;
+static int nmoveset = 6;
 static Moveset * all_ms[] = {
 	&moveset_HTM,
 	&moveset_URF,
