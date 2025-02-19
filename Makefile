@@ -65,4 +65,4 @@ uninstall:
 	rm -rf ${DESTDIR}${PREFIX}/bin/nissy ${DESTDIR}${MANPREFIX}/man1/nissy.1
 	for s in ${SCRIPTS}; do rm -rf ${DESTDIR}${PREFIX}/bin/$$s; done
 
-.PHONY: all debug clean dist install uninstall upload
+.PHONY: all debug clean dist install uninstall upload website
