@@ -450,6 +450,15 @@ scramble_exec(CommandArgs *args)
 	int i, j, eo, ep, co, cp, a[12];
 	int eparr[12] = { [8] = 8, [9] = 9, [10] = 10, [11] = 11 };
 	uint64_t ui, uj, uk;
+	AlgList *scrlist;
+	SolveOptions dropts = {
+		.min_moves = 0,
+		.max_moves = 19,
+		.max_solutions = 1,
+		.nthreads = 1,
+		.nisstype = NORMAL,
+		.verbose = false
+	};
 
 	init_all_movesets();
 	init_symcoord();
@@ -459,12 +468,8 @@ scramble_exec(CommandArgs *args)
 	for (i = 0; i < args->n; i++) {
 
 		if (!strcmp(args->scrtype, "dr")) {
-			/* Warning: cube is inconsistent because of side CO  *
-			 * and EO on U/D. But solve_2phase only solves drfin *
-			 * in this case, so it should be ok.                 *
-			 * TODO: check this properly                         *
-			 * Moreover we again need to fix parity after        *
-			 * generating epose manually                         */
+			/* Warning: cube is inconsistent because of side CO *
+			 * and EO on U/D, but we only solve drudfin on it.  */
 			do {
 				ui = rand() % FACTORIAL8;
 				uj = rand() % FACTORIAL8;
@@ -479,6 +484,9 @@ scramble_exec(CommandArgs *args)
 				cube.cp = uj;
 				cube.epose = uk;
 			} while (!is_admissible(cube));
+
+			scrlist = solve(cube, &drudfin_drud, &dropts);
+			scr = scrlist->first->alg;
 		} else if (!strcmp(args->scrtype, "htr")) {
 			/* antindex_htrfin() returns a consistent *
 			 * cube, except possibly for parity       */
@@ -490,6 +498,9 @@ scramble_exec(CommandArgs *args)
 				cube.eposs = rand() % 24;
 				cube.eposm = rand() % 24;
 			} while (!is_admissible(cube));
+
+			scrlist = solve(cube, &drudfin_drud, &dropts);
+			scr = scrlist->first->alg;
 		} else {
 			eo = rand() % POW2TO11;
 			ep = rand() % FACTORIAL12;
@@ -516,10 +527,8 @@ scramble_exec(CommandArgs *args)
 				}
 			}
 			cube = fourval_to_cube(eo, ep, co, cp);
+			scr = solve_2phase(cube, 1);
 		}
-
-		/* TODO: can be optimized for htr and dr using htrfin, drfin */
-		scr = solve_2phase(cube, 1);
 
 		if (!strcmp(args->scrtype, "fmc")) {
 			aux = new_alg("");
