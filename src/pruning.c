@@ -157,9 +157,9 @@ genptable(PruneData *pd, int nthreads)
 		fprintf(stderr,
 			"--- Warning ---\n"
 			"You are using only %d threads to generate the pruning"
-			"tables. This can take a while."
-			"Unless you did this intentionally, you should re-run"
-			"this command with `-t 4' or more.\n"
+			" tables. This can take a while."
+			" Unless you did this intentionally, you should re-run"
+			" this command with `-t 4' or more.\n"
 			"---------------\n\n", nthreads
 		);
 	}
