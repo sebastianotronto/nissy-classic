@@ -43,14 +43,11 @@ dist: clean nissy.exe
 	mv nissy.exe nissy-${VERSION}.exe
 
 upload: dist
-	rsync -v --rsync-path=openrsync nissy-${VERSION}.exe \
-		tronto.net:/var/www/htdocs/nissy.tronto.net/
-	rsync -v --rsync-path=openrsync nissy-${VERSION}.tar.gz \
-		tronto.net:/var/www/htdocs/nissy.tronto.net/
+	rsync -v nissy-${VERSION}.exe sebastiano@tronto.net:/var/www/nissy.tronto.net/
+	rsync -v nissy-${VERSION}.tar.gz sebastiano@tronto.net:/var/www/nissy.tronto.net/
 
 website:
-	rsync -rv --rsync-path=openrsync \
-		www/ tronto.net:/var/www/htdocs/nissy.tronto.net
+	rsync -rv www/ sebastiano@tronto.net:/var/www/nissy.tronto.net/
 
 install: nissy
 	mkdir -p ${DESTDIR}${PREFIX}/bin
@@ -63,6 +60,5 @@ install: nissy
 
 uninstall:
 	rm -rf ${DESTDIR}${PREFIX}/bin/nissy ${DESTDIR}${MANPREFIX}/man1/nissy.1
-	for s in ${SCRIPTS}; do rm -rf ${DESTDIR}${PREFIX}/bin/$$s; done
 
 .PHONY: all debug clean dist install uninstall upload website
